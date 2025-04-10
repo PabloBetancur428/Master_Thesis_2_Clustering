@@ -9,7 +9,7 @@ For each patient record (found via data_loader), it:
 import os
 import pandas as pd
 from data_loader_folders import load_all_patient_files
-from feature_extraction import RadiomicFeatureExtractor
+from pyradiomics_feature_extraction import RadiomicFeatureExtractor
 # Optional: import clustering and visualization modules if needed
 #from clustering import KMeansCluster
 #from visualization import plot_volume_distribution
@@ -40,9 +40,10 @@ def main():
 
         try:
             extractor = RadiomicFeatureExtractor(registered_folder)
-            extractor.load_images()
+            #extractor.load_images()
             lesion_feats = extractor.extract_features()  # List of dicts, one per lesion
         except Exception as e:
+            print(f"aaaaa")
             print(f"Error processing patient {patient_id} in {year_folder}: {e}")
             continue
 
@@ -61,7 +62,7 @@ def main():
     # Create output directory if it doesn't exist
     os.makedirs(os.path.join("feature_extraction", "output"), exist_ok=True)
 
-    output_csv_path = os.path.join("feature_extraction", "output", "aggregated_lesion_features.csv")
+    output_csv_path = os.path.join("feature_extraction", "output", "wavelet_pyradiomic_aggregated_lesion_features.csv")
     df.to_csv(output_csv_path, index=False)
     print(f"Dataframe saved to {output_csv_path}")
 
