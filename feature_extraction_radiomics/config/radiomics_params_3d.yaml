@@ -1,0 +1,15 @@
+# volumetric (3D) extraction, isotropic 1 mm
+imageType:
+  Original: {}
+  Wavelet:
+    start_level: 0
+    level: 1
+    wavelet: coif1
+  LBP3D: {} 
+
+setting:
+  force2D: false
+  resampledPixelSpacing: [1.0, 1.0, 1.0]
+  binWidth: 25
+  interpolator: sitkBSpline
+

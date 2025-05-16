@@ -1,0 +1,17 @@
+imageType:
+  Original: {}
+  Wavelet:
+    start_level: 0
+    level: 1
+    wavelet: coif1
+  LBP2D: {}
+
+
+# slice-wise (2D) extraction, in‐plane 1 mm
+setting:
+  force2D: true
+  force2Ddimension: 2      # ignore the Z axis (slice direction)
+  resampledPixelSpacing: [1.0, 1.0]
+  binWidth: 25
+
+
