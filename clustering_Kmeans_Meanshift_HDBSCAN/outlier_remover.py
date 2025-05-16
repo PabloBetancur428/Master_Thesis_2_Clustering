@@ -1,33 +1,34 @@
-import pandas as pd
+# outlier_remover.py
 import numpy as np
-from scipy import stats
+import pandas as pd
 
 class OutlierRemover:
     """
-    Provides methods to remove outliers from a DataFrame using the Z-score method.
+    Removes rows where any numeric feature's z-score exceeds a threshold.
+
+    Attributes:
+        z_thresh (float): Threshold for absolute z-score to consider an outlier.
     """
     def __init__(self, z_thresh: float = 3.0):
         """
-        Parameters:
-            z_thresh: The threshold for the Z-score beyond which data points are considered outliers.
+        Initializes the remover with a z-score threshold.
+
+        Args:
+            z_thresh (float): |z-score| cutoff; typical range 2.5–4.0.
         """
         self.z_thresh = z_thresh
 
     def remove_outliers(self, df: pd.DataFrame) -> pd.DataFrame:
         """
-        Removes rows from the DataFrame where any numeric column has a Z-score above the threshold.
-        
-        Parameters:
-            df: The input DataFrame.
-            
+        Computes z-scores and filters out rows exceeding the threshold.
+
+        Args:
+            df (pd.DataFrame): DataFrame with numeric columns.
+
         Returns:
-            A new DataFrame with outlier rows removed.
+            pd.DataFrame: DataFrame without outlier rows.
         """
-        # Work only on numeric columns
-        numeric_df = df.select_dtypes(include=[np.number])
-        # Compute the Z-scores
-        z_scores = np.abs(stats.zscore(numeric_df, nan_policy='omit'))
-        # Identify rows where all Z-scores are below the threshold
-        filtered_entries = (z_scores < self.z_thresh).all(axis=1)
-        # Return a new DataFrame with these rows only
-        return df[filtered_entries].reset_index(drop=True)
+        numeric = df.select_dtypes(include=[np.number])
+        z_scores = (numeric - numeric.mean()) / numeric.std(ddof=0)
+        mask = (abs(z_scores) <= self.z_thresh).all(axis=1)
+        return df.loc[mask].reset_index(drop=True)
