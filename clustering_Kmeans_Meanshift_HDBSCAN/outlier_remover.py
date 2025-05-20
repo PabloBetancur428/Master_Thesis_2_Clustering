@@ -1,4 +1,3 @@
-# outlier_remover.py
 import numpy as np
 import pandas as pd
 
@@ -26,9 +25,13 @@ class OutlierRemover:
             df (pd.DataFrame): DataFrame with numeric columns.
 
         Returns:
-            pd.DataFrame: DataFrame without outlier rows.
+            pd.DataFrame: DataFrame without outlier rows, preserving original index.
         """
+        # Select numeric columns for z-score calculation
         numeric = df.select_dtypes(include=[np.number])
+        # Calculate z-scores per column
         z_scores = (numeric - numeric.mean()) / numeric.std(ddof=0)
-        mask = (abs(z_scores) <= self.z_thresh).all(axis=1)
-        return df.loc[mask].reset_index(drop=True)
+        # Mask rows where all numeric values are within threshold
+        mask = (z_scores.abs() <= self.z_thresh).all(axis=1)
+        # Return filtered DataFrame, preserving original index for alignment
+        return df.loc[mask]
